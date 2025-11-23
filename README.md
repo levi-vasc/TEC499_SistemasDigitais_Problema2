@@ -66,17 +66,21 @@ Atualiza a imagem exibida por conexão VGA no monitor.
 
 <details>
 <summary><h2>Tutorial de Instalação e Configuração do Ambiente</h2></summary>
-
-Para ser possível compilar o projeto e executá-lo, é necessário ter o Quartus instalado no dispositivo. Além disso, há também que realizar o download das pastas `TEC499_SistemasDigitais_Problema2` e `API` presentes neste repertório. A primeira é o projeto do coprocessador propriamente dito e a segunda possui a biblioteca de funções em conjunto com outros arquivos necessários para linkagem e compilação.
+<div style="text-align: justify;">
+  
+  Para compilar e executar o projeto, é necessário ter o Quartus instalado. Além disso, faça o download das pastas `TEC499_SistemasDigitais_Problema2` e `API`, que estão localizadas neste repositório. A primeira pasta contém o projeto do coprocessador, enquanto a segunda traz a biblioteca de funções e demais arquivos necessários para a linkagem e compilação.
 
 Após atender os requisitos acima, pode-se avançar para a compilação do projeto. Os próximos passos são:
 
+</div>
+
 1. Abra o Quartus;
-2. Clique em `Open Project`
+2. Clique em `Open Project`;
 3. No explorador de arquivos, abra `soc_system.qpf`, que está dentro da pasta do projeto;
 4. Clique em `Start Compilation`, representado por uma seta azul na barra de ferramentas;
-5. Aguarde
+5. Aguarde a barra de `Compile Design` da aba Task chegar a 100% (indica que a compilação foi concluída).
 
+![tutorial1](https://github.com/user-attachments/assets/a9974525-1d1c-44ca-a538-37d585551a9e)
 
 
 </details>
