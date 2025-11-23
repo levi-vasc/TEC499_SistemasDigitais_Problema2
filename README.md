@@ -4,7 +4,6 @@ Segunda etapa do problema de MI de Sistemas Digitais, semestre 2025.2 da Univers
 <details>
 <summary><h2>Descrição e requisitos</h2></summary>
 
-# 
 Esta etapa do projeto tem como objetivo construir uma **API para o CoProcessador Aritmético** implementado na FPGA da **DE1-SoC**, permitindo que aplicações no HPS executem operações de zoom sobre imagens.  O coprocessador trabalha com **imagens em escala de cinza, resolução fixa de 320×240 pixels**, com cada pixel representado por um valor de **8 bits**.
 
 Os requisitos abaixo descrevem todas as funcionalidades atendidas nesta etapa.
