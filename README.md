@@ -45,7 +45,7 @@ Carrega valores de pixels da imagem original ou processada
 ### **Reset**
 Reinicia o Co-Processador, retornando ao estado inicial de execução.
 
-### Refresh
+### **Refresh**
 Atualiza a imagem exibida por conexão VGA no monitor.
 
 </details>  
@@ -67,7 +67,17 @@ Atualiza a imagem exibida por conexão VGA no monitor.
 <details>
 <summary><h2>Tutorial de Instalação e Configuração do Ambiente</h2></summary>
 
-#
+Para ser possível compilar o projeto e executá-lo, é necessário ter o Quartus instalado no dispositivo. Além disso, há também que realizar o download das pastas `TEC499_SistemasDigitais_Problema2` e `API` presentes neste repertório. A primeira é o projeto do coprocessador propriamente dito e a segunda possui a biblioteca de funções em conjunto com outros arquivos necessários para linkagem e compilação.
+
+Após atender os requisitos acima, pode-se avançar para a compilação do projeto. Os próximos passos são:
+
+1. Abra o Quartus;
+2. Clique em `Open Project`
+3. No explorador de arquivos, abra `soc_system.qpf`, que está dentro da pasta do projeto;
+4. Clique em `Start Compilation`, representado por uma seta azul na barra de ferramentas;
+5. Aguarde
+
+
 
 </details>
 
