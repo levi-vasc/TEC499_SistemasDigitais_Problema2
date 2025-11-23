@@ -46,16 +46,16 @@ A API implementa todas as instruções definidas para o coprocessador, habilitan
   Redução com suavização, calculada pela média dos pixels dentro de blocos
 
 ### **Store**
-- Transfere uma imagem em formato bitmap na escala de cinza para o Co-Processador Aritmético
+Transfere uma imagem em formato bitmap na escala de cinza para o Co-Processador Aritmético
 
 ### **Load**
-- Carrega valores de pixels da imagem original ou processada
+Carrega valores de pixels da imagem original ou processada
 
 ### **Reset**
-- Reinicia o Co-Processador, retornando ao estado inicial de execução.
+Reinicia o Co-Processador, retornando ao estado inicial de execução.
 
 ### Refresh
-- Atualiza a imagem exibida por conexão VGA no monitor.
+Atualiza a imagem exibida por conexão VGA no monitor.
 
 </details>  
 
