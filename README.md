@@ -11,6 +11,51 @@ Segunda etapa do problema de MI de Sistemas Digitais, semestre 2025.2 da Univers
 
 
 # Descrição e Requisitos 
+Esta etapa do projeto tem como objetivo construir uma **API para o CoProcessador Aritmético** implementado na FPGA da **DE1-SoC**, permitindo que aplicações no HPS executem operações de zoom sobre imagens.  O coprocessador trabalha com **imagens em escala de cinza, resolução fixa de 320×240 pixels**, com cada pixel representado por um valor de **8 bits**.
+
+Os requisitos abaixo descrevem todas as funcionalidades atendidas nesta etapa.
+
+## Requisitos Funcionais (RF)
+
+### **RF01 — API implementada em Assembly ARMv7**
+A biblioteca que controla o coprocessador foi desenvolvida em Assembly, realizando:
+- configuração dos barramento PIO mapeados na FPGA,  
+- envio de comandos e parâmetros,  
+- leitura dos resultados das operações.
+
+### **RF02 — Interface em C para integração**
+A API disponibiliza uma camada em C, permitindo que qualquer aplicação no HPS utilize as funções do coprocessador sem lidar diretamente com Assembly.
+
+### **RF03 — Implementação completa dos comandos da ISA**
+A API implementa todas as instruções definidas para o coprocessador, habilitando as seguintes funcionalidades:
+
+#### **Zoom In**
+- **Vizinho Mais Próximo (Nearest Neighbor)**  
+  Amplia a imagem selecionando pixels baseados na posição mais próxima.
+
+- **Replicação de Pixel (Pixel Replication)**  
+  Cada pixel é replicado em blocos, aumentando a resolução de forma proporcional.
+
+#### **Zoom Out**
+- **Vizinho Mais Próximo (Nearest Neighbor Downscale)**  
+  Reduz o tamanho da imagem através da seleção periódica de pixels.
+
+- **Média de Blocos (Block Averaging)**  
+  Redução com suavização, calculada pela média dos pixels dentro de blocos
+
+### **Store**
+- Transfere uma imagem em formato bitmap na escala de cinza para o Co-Processador Aritmético
+
+### **Load**
+- Carrega valores de pixels da imagem original ou processada
+
+### **Reset**
+- Reinicia o Co-Processador, retornando ao estado inicial de execução.
+
+### Refresh
+- Atualiza a imagem exibida por conexão VGA no monitor.
+
+
 
 # Ferramentas de Software
 
