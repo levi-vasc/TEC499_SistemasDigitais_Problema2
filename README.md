@@ -53,7 +53,14 @@ Atualiza a imagem exibida por conexão VGA no monitor.
 <details>
 <summary><h2>Ferramentas de Software</h2></summary>
 
-#
+O projeto foi desenvolvido no **Quartus Prime**, que é um Ambiente de Desenvolvimento Integrado (IDE) para desenvolver hardware em FPGA. Esse ambiente possui ferramentas que permitem configurar os pinos, realizar testes funcionais e temporais, validar o projeto antes da implementação na placa DE1-SoC, entre outros.
+
+- Versão utilizada: 23.1 Lite
+- Principais ferramentas:
+  - Editor de código: permite escrever código em Verilog;
+  - Compilador/Síntese: traduz o código HDL em uma representação lógica (netlist);
+  - Programador: carrega o arquivo final (.sof) para o dispositivo FPGA real;
+  - **Plataform Designer**: Esta foi uma das ferramentas mais úteis desta etapa. Ela possui a função de automatizar a criação da lógica de interconexão entre os vários blocos de hardware. 
 
 </details>
 
@@ -66,13 +73,10 @@ Atualiza a imagem exibida por conexão VGA no monitor.
 
 <details>
 <summary><h2>Tutorial de Instalação e Configuração do Ambiente</h2></summary>
-<div style="text-align: justify;">
   
-  Para compilar e executar o projeto, é necessário ter o Quartus instalado. Além disso, faça o download das pastas `TEC499_SistemasDigitais_Problema2` e `API`, que estão localizadas neste repositório. A primeira pasta contém o projeto do coprocessador, enquanto a segunda traz a biblioteca de funções e demais arquivos necessários para a linkagem e compilação.
+Para compilar e executar o projeto, é necessário ter o Quartus instalado. Além disso, faça o download das pastas `TEC499_SistemasDigitais_Problema2` e `API`, que estão localizadas neste repositório. A primeira pasta contém o projeto do coprocessador, enquanto a segunda traz a biblioteca de funções e demais arquivos necessários para a linkagem e compilação.
 
-Após atender os requisitos acima, pode-se avançar para a compilação do projeto. Os próximos passos são:
-
-</div>
+Após atender aos requisitos acima, pode-se avançar para a compilação do projeto. Os próximos passos são:
 
 1. Abra o Quartus;
 2. Clique em `Open Project`;
