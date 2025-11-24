@@ -214,6 +214,8 @@ https://github.com/DestinyWolf/Problema-SD-2025-2
 
 <details>
 <summary><h2>Tutorial de Instalação e Configuração do Ambiente</h2></summary>
+
+## Compilação e Execução do Projeto no Quartus
   
 Para compilar e executar o projeto, é necessário ter o Quartus instalado. Além disso, faça o download das pastas `TEC499_SistemasDigitais_Problema2` e `API`, que estão localizadas neste repositório. A primeira pasta contém o projeto do coprocessador, enquanto a segunda traz a biblioteca de funções e demais arquivos necessários para a linkagem e compilação.
 
@@ -232,34 +234,56 @@ Após isso, o projeto está pronto para ser executado. Certifique-se de que a pl
 1. Clique em `Programmer`, representado por um losango, na barra de ferramentas;
 2. Na nova janela, clique em `Hardware Setup`;
 3. Dê dois cliques em `DE-SoC` e feche a janela;
-4. Clique em `Auto Detect` e selecione a segunda opção -- na nova janela;
-5.   
+4. Clique em `Auto Detect` e selecione a segunda opção (`5CSEMA5`) na nova janela;
+5. Clique em "Yes" na nova janela;
+6. Exclua e segundo arquivo da lista, e posteriormente clique em `Add File`;
+7. No explorador de arquivos, acesse a pasta `output_files` do projeto e selecione `soc_system.sof`;
+8. Clique em `Start` e aguarde a barra progress chegar a 100%.
 
-[Gravação de tela de 2025-11-24 09-41-42.webm](https://github.com/user-attachments/assets/022af504-6d5b-4492-92b1-9d05d7ec79c2)
+![tutorial2](https://github.com/user-attachments/assets/1d68b321-1214-4f51-963a-b5d2e787911b)
 
-O monitor deve exibir uma imagem pré-definida após execução. Agora, deve-se acessar o HPS da placa. Para isso, abrimos o terminal e utilizamos o protocolo `ssh` por meio do seguinte comando:
+O monitor deve exibir uma imagem pré-definida após execução.
 
+## Envio do Código para o HPS
+
+Agora, deve-se acessar o HPS da placa. Para isso, abrimos o terminal e utilizamos o protocolo `ssh` por meio do seguinte comando:
+
+```
 ssh usuario@ip
-
-Aqui está o exemplo utilizando um dos computadores do LEDS:
-
-```
-aluno@LEDS-54151:~$ ssh aluno@172.65.213.122
-aluno@172.65.213.122's password: 
-Last login: Thu Jan  1 00:04:12 1970 from leds-54159.lan
-aluno@de1soc122:~$
 ```
 
+> [!NOTE]
+> Para realizar o acesso, é preciso do usuário e o ip da placa sendo utilizada. No caso das placas disponibilizadas pela UEFS, o nome de usuário é aluno e o ip é 172.65.213.???, sendo os últimos três dígitos variáveis.
+
+Depois disso, é necessário mover os arquivos da pasta API do computador para a placa. Para isso, deve-se acessar o terminal do computador e ir para o diretório dos arquivos
+
+- `pwd`: exibe diretório atual
+- `cd /diretorio`: vai para diretório selecionado;
+
+Chegando na pasta pretendida, executa-se o seguinte comando:
+
 ```
-aluno@LEDS-54151:~/Downloads/API$ scp * aluno@172.65.213.122:/home/aluno/API
+scp * aluno@172.65.213.122:/home/aluno/API
+```
+
+
+Assim, todos os arquivos irão para uma nova pasta API na placa. Logo depois, vá para a pasta pelo terminal da placa e execute os seguintes comandos: 
+
+```
+make clean
 ```
 
 ```
-aluno@de1soc122:~$ cd API
-aluno@de1soc122:~/API$ make clean
-aluno@de1soc122:~/API$ make
-aluno@de1soc122:~/API$ sudo ./main
+make
 ```
+
+Para compilação e linkagem, e
+
+```
+sudo ./main
+```
+
+Para iniciar o executável criado. Os próximos passos serão detalhados na próxima seção, [Execução e Testes](https://github.com/levi-vasc/TEC499_SistemasDigitais_Problema2/edit/main/README.md#execu%C3%A7%C3%A3o-e-testes).
 
 
 </details>
