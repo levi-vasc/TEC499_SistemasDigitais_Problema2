@@ -236,9 +236,35 @@ Após atender aos requisitos acima, pode-se avançar para a compilação do proj
 
 </details>
 
-<details>
-<summary><h2>Análise de Resultados</h2></summary>
+</details>
 
-#
+<details> <summary><h2>Análise de Resultados</h2></summary>
+
+A validação do sistema foi conduzida verificando o cumprimento dos requisitos funcionais estabelecidos para a comunicação entre a interface de software (API em Assembly) e o hardware dedicado (FPGA). Abaixo são detalhados os resultados obtidos para cada operação.
+
+### Carregamento e Exibição (Store & Refresh)
+O primeiro teste validou a capacidade da API de ler um arquivo de imagem do sistema de arquivos do Linux (HPS) e transferi-lo para a memória da FPGA.
+
+Resultado: A transferência via mapeamento de memória virtual (/dev/mem) funcionou corretamente. A imagem de 320x240 pixels foi exibida no monitor VGA sem corrupção de dados, validando o requisito de imagens em escala de cinza de 8 bits.
+
+### Operações de Zoom In (Ampliação)
+Foram testados os dois algoritmos de ampliação implementados na ISA do coprocessador.
+
+Vizinho Mais Próximo (Nearest Neighbor): O comando foi enviado via Assembly e o hardware respondeu replicando os pixels.
+
+Replicação de Pixel: O comportamento foi consistente com o esperado, ampliando a imagem em blocos.
+
+### Operações de Zoom Out (Redução)
+Esta etapa foi crítica para validar a capacidade aritmética do coprocessador. Foram testados os dois métodos de redução implementados:
+
+Decimação (Subamostragem): O algoritmo reduziu a imagem descartando periodicamente linhas e colunas de pixels.
+
+Média de Blocos (Block Averaging): O coprocessador calculou a média aritmética dos valores de intensidade de um bloco de pixels (ex: 2x2) para gerar um único pixel de saída.
+
+### Integração Hardware-Software
+O sistema atendeu ao objetivo de aprendizagem. A aplicação em C capturou corretamente as entradas do teclado e invocou as funções em Assembly, que por sua vez escreveram nos registradores corretos mapeados em memória.
+
+Conclusão dos Testes
+Todos os requisitos funcionais da 2ª etapa foram atendidos. O sistema permite carregar arquivos, processá-los via hardware dedicado e exibir o resultado, demonstrando o funcionamento correto do driver desenvolvido.
 
 </details>
