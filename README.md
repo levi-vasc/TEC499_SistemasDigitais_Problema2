@@ -483,11 +483,9 @@ A execução demonstrou que:
 
 <details> <summary><h2>Análise de Resultados</h2></summary>
 
-## Análise de Resultados
-
 A execução dos testes permitiu avaliar tanto a estabilidade da comunicação HPS ↔ FPGA quanto as operações implementadas no coprocessador. Os resultados indicam que o sistema funciona de forma confiável, coerente com a ISA especificada e sem apresentar comportamentos indesejados. A seguir, são destacadas as principais observações.
 
-### 1. Comunicação HPS–FPGA
+## Comunicação HPS–FPGA
 
 A API em Assembly ARMv7 demonstrou desempenho consistente ao acessar os PIOs, sem qualquer falha de mapeamento, travamento ou timeout.  
 Os sinais de controle (`enable`, `done`, `flags`) responderam conforme esperado, evidenciando:
