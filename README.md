@@ -97,7 +97,7 @@ A aplicação em C complementa a API escrita em Assembly, oferecendo uma camada 
 
 <details>
 <summary><h2>Ferramentas de Hardware</h2></summary>
-O projeto foi desenvolvido na placa **Terasic DE1-SoC**, que integra em um único chip um processador ARM e uma FPGA Cyclone V.
+O projeto foi desenvolvido na placa Terasic DE1-SoC, que integra em um único chip um processador ARM e uma FPGA Cyclone V.
 
 ## Hardware Utilizado
 
@@ -226,8 +226,20 @@ Após atender aos requisitos acima, pode-se avançar para a compilação do proj
 5. Aguarde a barra de `Compile Design` da aba Task chegar a 100% (indica que a compilação foi concluída).
 
 ![tutorial1](https://github.com/user-attachments/assets/a9974525-1d1c-44ca-a538-37d585551a9e)
-</details>
 
+
+Após isso, o projeto está pronto para ser executado. Certifique-se de que a placa está conectada ao computador através do `USB Blaster-II`e ao monitor por meio da saída VGA. Siga os seguintes passos:
+
+1. Clique em `Programmer`, representado por um losango, na barra de ferramentas;
+2. Na nova janela, clique em `Hardware Setup`;
+3. Dê dois cliques em `DE-SoC` e feche a janela;
+4. Clique em `Auto Detect` e selecione a segunda opção -- na nova janela;
+5.   
+
+[Gravação de tela de 2025-11-24 09-41-42.webm](https://github.com/user-attachments/assets/022af504-6d5b-4492-92b1-9d05d7ec79c2)
+
+
+</details>
 
 <details> <summary><h2>Execução e Testes</h2></summary>
 
