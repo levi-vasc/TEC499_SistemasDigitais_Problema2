@@ -251,11 +251,16 @@ aluno@de1soc122:~$
 ```
 
 ```
+aluno@LEDS-54151:~/Downloads/API$ scp * aluno@172.65.213.122:/home/aluno/API
+```
+
+```
 aluno@de1soc122:~$ cd API
 aluno@de1soc122:~/API$ make clean
 aluno@de1soc122:~/API$ make
 aluno@de1soc122:~/API$ sudo ./main
 ```
+
 
 </details>
 
