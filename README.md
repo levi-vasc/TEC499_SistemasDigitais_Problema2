@@ -229,42 +229,292 @@ Após atender aos requisitos acima, pode-se avançar para a compilação do proj
 </details>
 
 
-<details>
-<summary><h2>Execução e Testes</h2></summary>
+<details> <summary><h2>Execução e Testes</h2></summary>
 
-#
 
-</details>
+
+
+## 1. Envio do Código para o HPS
+
+Com o hardware pronto, deve-se transferir a aplicação e a API para o ambiente Linux da DE1-SoC.
+
+### 1.1 Acessando o HPS via SSH
+
+```bash
+ssh aluno@172.65.213.122
+```
+> **Lembrete Importante:**  
+> Ao configurar o acesso SSH ou a comunicação com o HPS, **substitua sempre os últimos 3 números do endereço IP** pelo IP correspondente à sua placa DE1-SoC.  
+> Cada placa utiliza um IP diferente na rede local, portanto ajuste antes de executar qualquer comando de conexão.
+
+### 1.2 Enviando a pasta da API
+
+No computador host:
+
+```bash
+scp main.c api.h api.s makefile aluno@172.65.213.122:/home/aluno/API
+```
+
+A pasta enviada deve conter:
+- arquivo `.s` da API em Assembly  
+- arquivo `.c` da aplicação  
+- arquivo `.h` com os protótipos  
+- Makefile para gerar o executável  
+
+---
+
+## 2. Geração do Executável no HPS
+
+Com os arquivos enviados, basta executar:
+
+```bash
+cd /home/aluno/API
+make
+```
+
+O Makefile compila a interface em C, compila os módulos Assembly, faz a linkagem e produz o executável final.
+
+---
+
+## 3. Execução da Aplicação
+
+Para rodar o programa:
+
+```bash
+./main
+```
+
+Ao iniciar, a aplicação:
+
+1. Inicializa a API e mapeia os PIOs do coprocessador via `/dev/mem` e `mmap()`.
+2. Exibe o menu principal para seleção da operação desejada.
+3. Aguarda o usuário escolher uma das funções de zoom, load, store ou reset.
+4. Envia a instrução correspondente ao coprocessador pela API (Assembly ARMv7).
+5. Caso aplicável, aguarda o sinal `done` do hardware e exibe o resultado no terminal ou no monitor VGA.
+
+### Comandos Disponíveis no Programa
+
+| Opção | Função Executada no Hardware |
+|-------|------------------------------|
+| `1`   | Aplicar Zoom In (Vizinho Mais Próximo) |
+| `2`   | Aplicar Zoom In (Replicação de Pixel) |
+| `3`   | Aplicar Zoom Out (Vizinho Mais Próximo) |
+| `4`   | Aplicar Zoom Out (Média de Blocos) |
+| `5`   | Carregar imagem BMP (Store) e atualizar VGA (Refresh) |
+| `6`   | Resetar o coprocessador |
+| `7`   | Ler pixel de uma memória (A ou C) usando LOAD |
+| `0`   | Finalizar API e encerrar o programa |
+
+---
+
+## 4. Testes de Funcionamento
+
+A seguir, são apresentados os testes realizados para validar o funcionamento da API e do hardware.
+
+---
+
+
+
+
+
+
+### Teste de Reset
+
+O teste validou o funcionamento da instrução **RESET**, responsável por restaurar o estado padrão do coprocessador.
+
+Durante o teste:
+
+- A aplicação enviou a instrução `RESET` para o PIO de instrução.
+- O coprocessador reinicializou sua lógica interna e retornou o nível de zoom ao valor padrão.
+- A imagem ativa foi substituída pela imagem armazenada originalmente na **memória A**.
+
+**Resultado do Teste:**
+- O coprocessador retornou corretamente ao estado inicial.
+- A imagem padrão da memória A voltou a ser exibida na VGA.
+- O nível de zoom foi totalmente resetado, sem inconsistências.
+
+<p align="center">
+  <img width="1248" height="649" alt="image" src="https://github.com/user-attachments/assets/aa0c3401-91a1-41cd-ab7e-048b9bd6235f" />
+  <br>
+  <em>Fluxograma geral das operações de Reset e de Zoom (Zoom In e Zoom Out).  
+O diagrama representa o processo padrão de envio de instruções ao coprocessador: escrever o comando no registrador de instrução, ativar o sinal `enable` e aguardar o retorno do sinal `done`.  
+Todas as operações seguem exatamente o mesmo fluxo; a única diferença entre Reset e os diferentes modos de Zoom é o valor do opcode colocado no PIO de instrução.
+</em>
+</p>
+
+---
+
+### Teste de Zoom In
+
+Foram testados os dois modos de ampliação disponíveis no coprocessador.  
+Ambos os comandos foram enviados pela API em Assembly e executados corretamente na FPGA.
+
+#### Nearest Neighbor (Vizinho Mais Próximo)
+- A imagem foi ampliada preservando a forma original dos objetos.  
+- O hardware respondeu imediatamente após o sinal `done`, mostrando a nova imagem no VGA.
+
+#### Pixel Replication (Replicação de Pixel)
+- A ampliação resultou na formação de blocos maiores substituindo cada pixel original.  
+- A operação foi executada sem atrasos ou artefatos.
+
+---
+
+### Teste de Zoom Out
+
+Foram avaliados os dois métodos de redução implementados no coprocessador.  
+As instruções foram enviadas pela API em Assembly, e o hardware executou corretamente as operações de downscale.
+
+#### Nearest Neighbor Downscale (Amostragem Periódica)
+- A imagem reduzida foi gerada selecionando pixels em intervalos regulares.  
+- O resultado manteve a estrutura geral da imagem original.  
+- O comportamento observou exatamente o previsto para subamostragem direta.
+
+#### Block Average (Média de Blocos)
+- A redução apresentou suavização adequada devido ao cálculo da média entre grupos de pixels.  
+- O algoritmo executado pelo hardware produziu uma versão reduzida mais homogênea, visualmente estável e condizente com o método de média.
+
+---
+
+### Teste de Leitura (LOAD)
+
+A aplicação testou a instrução **LOAD**, permitindo ler valores individuais de pixels diretamente da memória do coprocessador.
+
+Durante o teste:
+
+- O usuário selecionou a memória desejada (`0 = A (original)` ou `1 = C (processada)`).
+- Informou o endereço do pixel a ser lido.
+- A API gerou a instrução LOAD combinando `mem_sel` e `address` nos campos da ISA.
+- O coprocessador processou a requisição e retornou o valor via PIO `data_out`.
+
+**Resultado do Teste:**
+- O PIO `data_out` retornou corretamente cada valor solicitado.
+- Todas as leituras exibidas no terminal corresponderam aos pixels armazenados na FPGA.
+- Não houve inconsistências ou falhas na decodificação da instrução.
+
+<p align="center">
+  <img width="1248" height="649" alt="image" src="https://github.com/user-attachments/assets/7fa7fdba-d1fd-4d87-b5e9-fe0be4cb26e5" />
+  <br>
+  <em>Fluxograma apresentando a operação LOAD em alto nível.  
+O diagrama mostra o processo de seleção da memória, envio da instrução ao coprocessador e leitura do valor retornado pelo PIO `data_out`, permitindo visualizar de forma simplificada como ocorre a leitura individual de pixels.
+</em>
+</p>
+
+---
+
+### Teste de Store (Carregamento da Imagem)
+
+A aplicação recebeu o caminho de um arquivo BMP e iniciou o processo de envio da imagem para o coprocessador.  
+Durante a execução do comando **Store**, o programa:
+
+1. Abre o arquivo BMP informado pelo usuário.
+2. Lê o cabeçalho da imagem para identificar o `bfOffBits` e saltar para o inicio da informação da imagem.
+3. Converte cada pixel BGR para escala de cinza.
+4. Envia **pixel por pixel** para o coprocessador (total de 76.800 pixels).
+5. Aguarda o sinal de finalização (`done`) a cada escrita.
+6. Após concluir o envio, solicita um **Refresh** para atualizar a imagem no monitor VGA.
+
+**Resultado do Teste:**
+- A imagem foi carregada integralmente nas memórias M10K da FPGA.  
+- Todos os 76.800 pixels foram enviados sem falhas.  
+- A imagem apareceu corretamente no monitor VGA, sem artefatos, distorções ou corrupção de dados.
+
+<p align="center">
+  <img width="1248" height="649" alt="image" src="https://github.com/user-attachments/assets/cb9fc28f-f6f3-4c01-a156-4b542b64d0e3" />
+  <br>
+  <em>Fluxograma ilustrando, de forma simplificada, o funcionamento da operação STORE. 
+O diagrama ilustra as etapas principais: leitura do arquivo BMP, montagem da instrução e envio sequencial dos 76.800 pixels ao coprocessador.
+</em>
+</p>
+
+
+---
+
+# Conclusão dos Testes
+
+Os testes realizados confirmaram a integração completa entre software e hardware, garantindo o funcionamento adequado do coprocessador desenvolvido.
+
+A execução demonstrou que:
+
+- A API em Assembly ARMv7 comunicou-se corretamente com os PIOs da FPGA via `mmap()` e `/dev/mem`.
+- A aplicação em C enviou com sucesso todas as instruções, validando cada operação prevista na ISA.
+- O coprocessador executou corretamente todas as instruções implementadas (Store, Load, Zoom In, Zoom Out, Reset e Refresh).
+- A comunicação entre HPS e FPGA permaneceu estável durante toda a execução, sem travamentos, corrupção de dados ou sinais incorretos.
+- As imagens processadas foram exibidas corretamente no monitor VGA, respeitando o formato e resolução definidos.
+
+
+
+
 
 </details>
 
 <details> <summary><h2>Análise de Resultados</h2></summary>
 
-A validação do sistema foi conduzida verificando o cumprimento dos requisitos funcionais estabelecidos para a comunicação entre a interface de software (API em Assembly) e o hardware dedicado (FPGA). Abaixo são detalhados os resultados obtidos para cada operação.
+## Análise de Resultados
 
-### Carregamento e Exibição (Store & Refresh)
-O primeiro teste validou a capacidade da API de ler um arquivo de imagem do sistema de arquivos do Linux (HPS) e transferi-lo para a memória da FPGA.
+A execução dos testes permitiu avaliar tanto a estabilidade da comunicação HPS ↔ FPGA quanto as operações implementadas no coprocessador. Os resultados indicam que o sistema funciona de forma confiável, coerente com a ISA especificada e sem apresentar comportamentos indesejados. A seguir, são destacadas as principais observações.
 
-Resultado: A transferência via mapeamento de memória virtual (/dev/mem) funcionou corretamente. A imagem de 320x240 pixels foi exibida no monitor VGA sem corrupção de dados, validando o requisito de imagens em escala de cinza de 8 bits.
+### 1. Comunicação HPS–FPGA
 
-### Operações de Zoom In (Ampliação)
-Foram testados os dois algoritmos de ampliação implementados na ISA do coprocessador.
+A API em Assembly ARMv7 demonstrou desempenho consistente ao acessar os PIOs, sem qualquer falha de mapeamento, travamento ou timeout.  
+Os sinais de controle (`enable`, `done`, `flags`) responderam conforme esperado, evidenciando:
 
-Vizinho Mais Próximo (Nearest Neighbor): O comando foi enviado via Assembly e o hardware respondeu replicando os pixels.
+- Latência baixa e determinística no ciclo de instruções;
+- Ausência de leituras inválidas ou sinais incorretos;
+- Sincronização correta entre software e hardware.
 
-Replicação de Pixel: O comportamento foi consistente com o esperado, ampliando a imagem em blocos.
+Isso confirma a ponte Lightweight AXI e a correta configuração dos PIOs no Platform Designer.
 
-### Operações de Zoom Out (Redução)
-Esta etapa foi crítica para validar a capacidade aritmética do coprocessador. Foram testados os dois métodos de redução implementados:
+### 2. Execução das Instruções da ISA
 
-Decimação (Subamostragem): O algoritmo reduziu a imagem descartando periodicamente linhas e colunas de pixels.
+Todas as instruções previstas foram executadas integralmente:
 
-Média de Blocos (Block Averaging): O coprocessador calculou a média aritmética dos valores de intensidade de um bloco de pixels (ex: 2x2) para gerar um único pixel de saída.
+- **Store** transferiu 76.800 pixels sem perda ou corrupção;
+- **Load** retornou os valores exatos armazenados nas memórias M10K;
+- **Zoom In/Out** preservaram as características esperadas de cada algoritmo;
+- **Reset** restaurou o estado inicial com precisão;
+- **Refresh** atualizou o conteúdo exibido sem atrasos perceptíveis.
 
-### Integração Hardware-Software
-O sistema atendeu ao objetivo de aprendizagem. A aplicação em C capturou corretamente as entradas do teclado e invocou as funções em Assembly, que por sua vez escreveram nos registradores corretos mapeados em memória.
+Não foram observados comportamentos incorretos, erros de decodificação ou inconsistências nos resultados.
 
-Conclusão dos Testes
-Todos os requisitos funcionais da 2ª etapa foram atendidos. O sistema permite carregar arquivos, processá-los via hardware dedicado e exibir o resultado, demonstrando o funcionamento correto do driver desenvolvido.
+### 3. Processamento de Imagens no Coprocessador
+
+As imagens processadas mantiveram a identidade visual e o comportamento esperado para cada operação:
+
+- **Zoom In (Nearest Neighbor)**: manteve bordas definidas, sem borrões.
+- **Zoom In (Pixel Replication)**: ampliou conforme especificação.
+- **Zoom Out (Nearest Neighbor Downscale)**: reduziu por amostragem, preservando padrões e estruturas.
+- **Zoom Out (Block Average)**: produziu suavização consistente e homogênea.
+- **Reset**: recuperou a imagem original da memória A sem artefatos.
+
+Isso demonstra que os algoritmos implementados em hardware foram corretamente traduzidos para lógica combinacional/sequencial na FPGA.
+
+### 4. Estabilidade e Confiabilidade do Sistema
+
+Ao longo dos testes:
+
+- Nenhuma operação gerou estado inválido no coprocessador;
+- O sinal `done` respondeu sempre após o número esperado de ciclos;
+- Não houve necessidade de reenvio de instruções;
+- O hardware não apresentou travamentos ou inconsistências nas flags.
+
+A operação contínua confirma que o pipeline da lógica de zoom, as M10Ks e o módulo VGA estão corretamente integrados e sincronizados.
+
+### 5. Integração da API com a Aplicação em C
+
+A camada em C cumpriu plenamente sua função:
+
+- Organizou chamadas de alto nível para o Assembly;
+- Garantiu parâmetros corretos para instruções complexas (Store, Load);
+- Exibiu mensagens consistentes e permitiu interação intuitiva via terminal.
+
+---
+
+## Síntese
+
+O conjunto de testes valida o funcionamento completo do sistema desenvolvido.  
+O coprocessador executa corretamente todas as operações da ISA, a API em Assembly realiza comunicação confiável com o hardware, e a aplicação em C integra todo o processo de forma transparente para o usuário final.
+
+O projeto atende integralmente aos requisitos funcionais e apresenta um nível elevado de estabilidade, organização e correção.
 
 </details>
+
