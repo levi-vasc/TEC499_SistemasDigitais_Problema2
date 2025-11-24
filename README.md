@@ -107,11 +107,9 @@ O projeto foi desenvolvido na placa Terasic DE1-SoC, que integra em um único ch
 - **Monitor VGA com resolução 640x480 a 60 Hz** exibindo a imagem processada pelo coprocessador 
 
 A comunicação entre o HPS e a FPGA é feita por meio de **PIOs (Parallel I/O)** configurados no **Platform Designer**, ligados ao barramento **HPS-to-FPGA Lightweight AXI Bridge**.  
-Esses PIOs são conectados aos registradores do HPS após serem mapeados em memória (MMIO) e acessados via `mmap()`.
+Esses PIOs são conectados aos registradores do HPS após serem mapeados em memória (MMIO) e acessados via `mmap()`. Em detalhes a seguir, têm-se
 
----
-
-# 1. Plataforma Utilizada: DE1-SoC
+# Plataforma Utilizada: DE1-SoC
 
 ## Cyclone V SoC (5CSEMA5F31C6N)
 
@@ -148,7 +146,7 @@ O HPS utiliza o **ARM Cortex-A9**, pertencente à arquitetura **ARMv7-A**, que o
   - Extensões SIMD NEON
 - **MMU e virtualização**, necessárias para a comunicação correta entre HPS e FPGA
 
-# 2. Conexão HPS ↔ FPGA via PIO
+# Conexão HPS ↔ FPGA via PIO
 
 A comunicação entre os dois domínios usa **4 PIOs criados no Platform Designer** pelo barramento Lightweight AXI de 32 bits, conforme o diagrama:
 
@@ -286,37 +284,8 @@ Para iniciar o executável criado. Os próximos passos serão detalhados na pró
 </details>
 
 <details> <summary><h2>Execução e Testes</h2></summary>
-
-### 1.2 Enviando a pasta da API
-
-No computador host:
-
-```bash
-scp main.c api.h api.s makefile aluno@172.65.213.122:/home/aluno/API
-```
-
-A pasta enviada deve conter:
-- arquivo `.s` da API em Assembly  
-- arquivo `.c` da aplicação  
-- arquivo `.h` com os protótipos  
-- Makefile para gerar o executável  
-
----
-
-## 2. Geração do Executável no HPS
-
-Com os arquivos enviados, basta executar:
-
-```bash
-cd /home/aluno/API
-make
-```
-
-O Makefile compila a interface em C, compila os módulos Assembly, faz a linkagem e produz o executável final.
-
----
-
-## 3. Execução da Aplicação
+  
+## Execução da Aplicação
 
 Ao iniciar, a aplicação:
 
@@ -341,16 +310,11 @@ Ao iniciar, a aplicação:
 
 ---
 
-## 4. Testes de Funcionamento
+## Testes de Funcionamento
 
 A seguir, são apresentados os testes realizados para validar o funcionamento da API e do hardware.
 
 ---
-
-
-
-
-
 
 ### Teste de Reset
 
@@ -363,6 +327,12 @@ Durante o teste:
 - A imagem ativa foi substituída pela imagem armazenada originalmente na **memória A**.
 
 **Resultado do Teste:**
+<p align="center">
+  <img width="720" height="540" alt="image (1)" src="https://github.com/user-attachments/assets/f7f1e80f-3fe5-4edc-bdb6-e52cb0f88b8e" />
+  <br>
+  <em> Imagem da Execução de Reset.
+</em>
+</p>
 - O coprocessador retornou corretamente ao estado inicial.
 - A imagem padrão da memória A voltou a ser exibida na VGA.
 - O nível de zoom foi totalmente resetado, sem inconsistências.
@@ -391,6 +361,17 @@ Ambos os comandos foram enviados pela API em Assembly e executados corretamente 
 - A ampliação resultou na formação de blocos maiores substituindo cada pixel original.  
 - A operação foi executada sem atrasos ou artefatos.
 
+**Resultado do Teste:**
+<p align="center">
+  <img width="720" height="540" alt="image" src="https://github.com/user-attachments/assets/29e72e00-0a80-4a2c-af62-482fc74f9587" />
+  <br>
+  <em> Imagem da Execução dos algoritmos de Zoom In.
+</em>
+</p>
+
+- A imagem C sofreu um efeito de Zoom In em 2x.
+- Não houve inconsistências ou falhas na decodificação da instrução.
+
 ---
 
 ### Teste de Zoom Out
@@ -407,6 +388,17 @@ As instruções foram enviadas pela API em Assembly, e o hardware executou corre
 - A redução apresentou suavização adequada devido ao cálculo da média entre grupos de pixels.  
 - O algoritmo executado pelo hardware produziu uma versão reduzida mais homogênea, visualmente estável e condizente com o método de média.
 
+**Resultado do Teste:**
+<p align="center">
+  <img width="720" height="540" alt="image (2)" src="https://github.com/user-attachments/assets/ae5b7ec8-0608-408b-81ae-fc1961bf117c" />
+  <br>
+  <em> Imagem da Execução dos algoritmos de Zoom Out.
+</em>
+</p>
+
+- A imagem C sofreu um efeito de Zoom Out em 2x.
+- Não houve inconsistências ou falhas na decodificação da instrução.
+
 ---
 
 ### Teste de Leitura (LOAD)
@@ -421,6 +413,10 @@ Durante o teste:
 - O coprocessador processou a requisição e retornou o valor via PIO `data_out`.
 
 **Resultado do Teste:**
+```
+Pixel de Endereço do Endereço 36000 na Memória A: 199 
+```
+> **Lembrete**: Este caso foi testado para a imagem inicializada no Co-Processador.
 - O PIO `data_out` retornou corretamente cada valor solicitado.
 - Todas as leituras exibidas no terminal corresponderam aos pixels armazenados na FPGA.
 - Não houve inconsistências ou falhas na decodificação da instrução.
@@ -448,6 +444,13 @@ Durante a execução do comando **Store**, o programa:
 6. Após concluir o envio, solicita um **Refresh** para atualizar a imagem no monitor VGA.
 
 **Resultado do Teste:**
+<p align="center">
+  <img width="720" height="540" alt="image (3)" src="https://github.com/user-attachments/assets/78141c16-0efc-407a-ba92-ff8eeda3e4b6" />
+  <br>
+  <em> Imaagem de Execução do Store com o arquivo imagem "imagem_teste.bmp".
+</em>
+</p>
+
 - A imagem foi carregada integralmente nas memórias M10K da FPGA.  
 - Todos os 76.800 pixels foram enviados sem falhas.  
 - A imagem apareceu corretamente no monitor VGA, sem artefatos, distorções ou corrupção de dados.
@@ -460,32 +463,13 @@ O diagrama ilustra as etapas principais: leitura do arquivo BMP, montagem da ins
 </em>
 </p>
 
-
----
-
-# Conclusão dos Testes
-
-Os testes realizados confirmaram a integração completa entre software e hardware, garantindo o funcionamento adequado do coprocessador desenvolvido.
-
-A execução demonstrou que:
-
-- A API em Assembly ARMv7 comunicou-se corretamente com os PIOs da FPGA via `mmap()` e `/dev/mem`.
-- A aplicação em C enviou com sucesso todas as instruções, validando cada operação prevista na ISA.
-- O coprocessador executou corretamente todas as instruções implementadas (Store, Load, Zoom In, Zoom Out, Reset e Refresh).
-- A comunicação entre HPS e FPGA permaneceu estável durante toda a execução, sem travamentos, corrupção de dados ou sinais incorretos.
-- As imagens processadas foram exibidas corretamente no monitor VGA, respeitando o formato e resolução definidos.
-
-
-
-
-
 </details>
 
 <details> <summary><h2>Análise de Resultados</h2></summary>
 
 A execução dos testes permitiu avaliar tanto a estabilidade da comunicação HPS ↔ FPGA quanto as operações implementadas no coprocessador. Os resultados indicam que o sistema funciona de forma confiável, coerente com a ISA especificada e sem apresentar comportamentos indesejados. A seguir, são destacadas as principais observações.
 
-## Comunicação HPS–FPGA
+### Comunicação HPS–FPGA
 
 A API em Assembly ARMv7 demonstrou desempenho consistente ao acessar os PIOs, sem qualquer falha de mapeamento, travamento ou timeout.  
 Os sinais de controle (`enable`, `done`, `flags`) responderam conforme esperado, evidenciando:
@@ -496,7 +480,7 @@ Os sinais de controle (`enable`, `done`, `flags`) responderam conforme esperado,
 
 Isso confirma a ponte Lightweight AXI e a correta configuração dos PIOs no Platform Designer.
 
-### 2. Execução das Instruções da ISA
+### Execução das Instruções da ISA
 
 Todas as instruções previstas foram executadas integralmente:
 
@@ -508,7 +492,7 @@ Todas as instruções previstas foram executadas integralmente:
 
 Não foram observados comportamentos incorretos, erros de decodificação ou inconsistências nos resultados.
 
-### 3. Processamento de Imagens no Coprocessador
+### Processamento de Imagens no Coprocessador
 
 As imagens processadas mantiveram a identidade visual e o comportamento esperado para cada operação:
 
@@ -520,7 +504,7 @@ As imagens processadas mantiveram a identidade visual e o comportamento esperado
 
 Isso demonstra que os algoritmos implementados em hardware foram corretamente traduzidos para lógica combinacional/sequencial na FPGA.
 
-### 4. Estabilidade e Confiabilidade do Sistema
+### Estabilidade e Confiabilidade do Sistema
 
 Ao longo dos testes:
 
@@ -531,7 +515,7 @@ Ao longo dos testes:
 
 A operação contínua confirma que o pipeline da lógica de zoom, as M10Ks e o módulo VGA estão corretamente integrados e sincronizados.
 
-### 5. Integração da API com a Aplicação em C
+### Integração da API com a Aplicação em C
 
 A camada em C cumpriu plenamente sua função:
 
@@ -541,12 +525,18 @@ A camada em C cumpriu plenamente sua função:
 
 ---
 
-## Síntese
+# Conclusão dos Resultados
 
-O conjunto de testes valida o funcionamento completo do sistema desenvolvido.  
-O coprocessador executa corretamente todas as operações da ISA, a API em Assembly realiza comunicação confiável com o hardware, e a aplicação em C integra todo o processo de forma transparente para o usuário final.
+Os resultados confirmaram a integração completa entre software e hardware, garantindo o funcionamento adequado do coprocessador desenvolvido.
 
-O projeto atende integralmente aos requisitos funcionais e apresenta um nível elevado de estabilidade, organização e correção.
+A execução demonstrou que:
+
+- A API em Assembly ARMv7 comunicou-se corretamente com os PIOs da FPGA via `mmap()` e `/dev/mem`.
+- A aplicação em C enviou com sucesso todas as instruções, validando cada operação prevista na ISA.
+- O coprocessador executou corretamente todas as instruções implementadas (Store, Load, Zoom In, Zoom Out, Reset e Refresh).
+- A comunicação entre HPS e FPGA permaneceu estável durante toda a execução, sem travamentos, corrupção de dados ou sinais incorretos.
+- As imagens processadas foram exibidas corretamente no monitor VGA, respeitando o formato e resolução definidos.
+- O projeto atende integralmente aos requisitos funcionais e apresenta um nível elevado de estabilidade, organização e correção.
 
 </details>
 
