@@ -104,7 +104,7 @@ O projeto foi desenvolvido na placa **Terasic DE1-SoC**, que integra em um únic
 - **HPS ARM Cortex-A9 Dual-Core** executando Linux  
 - **FPGA Intel/Altera Cyclone V** com o projeto do Co-Processador  
 - **Interconexões AXI (Lightweight)** entre HPS e FPGA  
-- **Monitor VGA** exibindo a imagem processada pelo coprocessador
+- **Monitor VGA com resolução 640x480 a 60 Hz** exibindo a imagem processada pelo coprocessador 
 
 A comunicação entre o HPS e a FPGA é feita por meio de **PIOs (Parallel I/O)** configurados no **Platform Designer**, ligados ao barramento **HPS-to-FPGA Lightweight AXI Bridge**.  
 Esses PIOs são conectados aos registradores do HPS após serem mapeados em memória (MMIO) e acessados via `mmap()`.
@@ -211,6 +211,23 @@ Conforme o diagrama abaixo, os principais componentes são:
 https://github.com/DestinyWolf/Problema-SD-2025-2
 
 </details>
+
+<details>
+<summary><h2>Tutorial de Instalação e Configuração do Ambiente</h2></summary>
+  
+Para compilar e executar o projeto, é necessário ter o Quartus instalado. Além disso, faça o download das pastas `TEC499_SistemasDigitais_Problema2` e `API`, que estão localizadas neste repositório. A primeira pasta contém o projeto do coprocessador, enquanto a segunda traz a biblioteca de funções e demais arquivos necessários para a linkagem e compilação.
+
+Após atender aos requisitos acima, pode-se avançar para a compilação do projeto. Os próximos passos são:
+
+1. Abra o Quartus;
+2. Clique em `Open Project`;
+3. No explorador de arquivos, abra `soc_system.qpf`, que está dentro da pasta do projeto;
+4. Clique em `Start Compilation`, representado por uma seta azul na barra de ferramentas;
+5. Aguarde a barra de `Compile Design` da aba Task chegar a 100% (indica que a compilação foi concluída).
+
+![tutorial1](https://github.com/user-attachments/assets/a9974525-1d1c-44ca-a538-37d585551a9e)
+</details>
+
 
 <details>
 <summary><h2>Execução e Testes</h2></summary>
