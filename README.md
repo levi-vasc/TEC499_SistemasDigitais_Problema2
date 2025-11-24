@@ -368,7 +368,7 @@ Durante o teste:
 - O nível de zoom foi totalmente resetado, sem inconsistências.
 
 <p align="center">
-  <img width="1248" height="649" alt="image" src="https://github.com/user-attachments/assets/aa0c3401-91a1-41cd-ab7e-048b9bd6235f" />
+  <img width="725" height="355" alt="image" src="https://github.com/user-attachments/assets/97aab2b6-33fd-44ff-aa33-ab3e5032c459" />
   <br>
   <em>Fluxograma geral das operações de Reset e de Zoom (Zoom In e Zoom Out).  
 O diagrama representa o processo padrão de envio de instruções ao coprocessador: escrever o comando no registrador de instrução, ativar o sinal `enable` e aguardar o retorno do sinal `done`.  
@@ -426,7 +426,7 @@ Durante o teste:
 - Não houve inconsistências ou falhas na decodificação da instrução.
 
 <p align="center">
-  <img width="1248" height="649" alt="image" src="https://github.com/user-attachments/assets/7fa7fdba-d1fd-4d87-b5e9-fe0be4cb26e5" />
+  <img width="1248" height="649" alt="image" src="https://github.com/user-attachments/assets/cbb306be-8b9b-4e76-a6af-b4f1028d8d4c" />
   <br>
   <em>Fluxograma apresentando a operação LOAD em alto nível.  
 O diagrama mostra o processo de seleção da memória, envio da instrução ao coprocessador e leitura do valor retornado pelo PIO `data_out`, permitindo visualizar de forma simplificada como ocorre a leitura individual de pixels.
@@ -453,7 +453,7 @@ Durante a execução do comando **Store**, o programa:
 - A imagem apareceu corretamente no monitor VGA, sem artefatos, distorções ou corrupção de dados.
 
 <p align="center">
-  <img width="1248" height="649" alt="image" src="https://github.com/user-attachments/assets/cb9fc28f-f6f3-4c01-a156-4b542b64d0e3" />
+  <img width="1567" height="696" alt="image" src="https://github.com/user-attachments/assets/33407de4-45a0-4801-9f8c-5cf4551e750e" />
   <br>
   <em>Fluxograma ilustrando, de forma simplificada, o funcionamento da operação STORE. 
 O diagrama ilustra as etapas principais: leitura do arquivo BMP, montagem da instrução e envio sequencial dos 76.800 pixels ao coprocessador.
