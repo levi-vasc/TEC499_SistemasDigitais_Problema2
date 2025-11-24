@@ -227,7 +227,6 @@ Após atender aos requisitos acima, pode-se avançar para a compilação do proj
 
 ![tutorial1](https://github.com/user-attachments/assets/a9974525-1d1c-44ca-a538-37d585551a9e)
 
-
 Após isso, o projeto está pronto para ser executado. Certifique-se de que a placa está conectada ao computador através do `USB Blaster-II`e ao monitor por meio da saída VGA. Siga os seguintes passos:
 
 1. Clique em `Programmer`, representado por um losango, na barra de ferramentas;
@@ -238,6 +237,25 @@ Após isso, o projeto está pronto para ser executado. Certifique-se de que a pl
 
 [Gravação de tela de 2025-11-24 09-41-42.webm](https://github.com/user-attachments/assets/022af504-6d5b-4492-92b1-9d05d7ec79c2)
 
+O monitor deve exibir uma imagem pré-definida após execução. Agora, deve-se acessar o HPS da placa. Para isso, abrimos o terminal e utilizamos o protocolo `ssh` por meio do seguinte comando:
+
+ssh usuario@ip
+
+Aqui está o exemplo utilizando um dos computadores do LEDS:
+
+```
+aluno@LEDS-54151:~$ ssh aluno@172.65.213.122
+aluno@172.65.213.122's password: 
+Last login: Thu Jan  1 00:04:12 1970 from leds-54159.lan
+aluno@de1soc122:~$
+```
+
+```
+aluno@de1soc122:~$ cd API
+aluno@de1soc122:~/API$ make clean
+aluno@de1soc122:~/API$ make
+aluno@de1soc122:~/API$ sudo ./main
+```
 
 </details>
 
