@@ -246,26 +246,23 @@ O monitor deve exibir uma imagem pré-definida após execução.
 
 ## Envio do Código para o HPS
 
-Agora, deve-se acessar o HPS da placa. Para isso, abrimos o terminal e utilizamos o protocolo `ssh` por meio do seguinte comando:
+Com o hardware pronto, deve-se transferir a aplicação e a API para o ambiente Linux da DE1-SoC. Para isso, utilizamos o protocolo `ssh`
 
 ```
-ssh usuario@ip
+ssh aluno@172.65.213.120
 ```
 
-> [!NOTE]
-> Para realizar o acesso, é preciso do usuário e o ip da placa sendo utilizada. No caso das placas disponibilizadas pela UEFS, o nome de usuário é aluno e o ip é 172.65.213.???, sendo os últimos três dígitos variáveis.
+> **Lembrete Importante:**  
+> Ao configurar o acesso SSH ou a comunicação com o HPS, **substitua sempre os últimos 3 números do endereço IP** pelo IP correspondente à sua placa DE1-SoC.  
+> Cada placa utiliza um IP diferente na rede local, portanto ajuste antes de executar qualquer comando de conexão.
+>
+> Caso esteje utilizando uma placa que não é disponibilizada pela UEFS, procure pelo nome de usuário e o ip configurados na placa. Substitua `aluno` e `172.65.213.120` pelos novos nome de usuário e ip, respectivamente.
 
-Depois disso, é necessário mover os arquivos da pasta API do computador para a placa. Para isso, deve-se acessar o terminal do computador e ir para o diretório dos arquivos
-
-- `pwd`: exibe diretório atual
-- `cd /diretorio`: vai para diretório selecionado;
-
-Chegando na pasta pretendida, executa-se o seguinte comando:
+Depois disso, é necessário mover os arquivos da pasta API do computador para a placa. Para isso, deve-se executar o seguinte comando no computador host, já no diretório dos arquivos API:
 
 ```
 scp * aluno@172.65.213.122:/home/aluno/API
 ```
-
 
 Assim, todos os arquivos irão para uma nova pasta API na placa. Logo depois, vá para a pasta pelo terminal da placa e execute os seguintes comandos: 
 
@@ -289,22 +286,6 @@ Para iniciar o executável criado. Os próximos passos serão detalhados na pró
 </details>
 
 <details> <summary><h2>Execução e Testes</h2></summary>
-
-
-
-
-## 1. Envio do Código para o HPS
-
-Com o hardware pronto, deve-se transferir a aplicação e a API para o ambiente Linux da DE1-SoC.
-
-### 1.1 Acessando o HPS via SSH
-
-```bash
-ssh aluno@172.65.213.122
-```
-> **Lembrete Importante:**  
-> Ao configurar o acesso SSH ou a comunicação com o HPS, **substitua sempre os últimos 3 números do endereço IP** pelo IP correspondente à sua placa DE1-SoC.  
-> Cada placa utiliza um IP diferente na rede local, portanto ajuste antes de executar qualquer comando de conexão.
 
 ### 1.2 Enviando a pasta da API
 
@@ -336,12 +317,6 @@ O Makefile compila a interface em C, compila os módulos Assembly, faz a linkage
 ---
 
 ## 3. Execução da Aplicação
-
-Para rodar o programa:
-
-```bash
-./main
-```
 
 Ao iniciar, a aplicação:
 
